@@ -3,5 +3,5 @@ import {User} from './models'
 
 
 export interface AuthRequest extends Request {
-    user : Partial<User>
+    user? : Partial<User>
 }

@@ -1,4 +1,4 @@
-import { number } from 'joi';
+
 import mongoose from 'mongoose';
 import {User as IUser} from '../types';
 import timezone from 'moment-timezone';
@@ -22,18 +22,15 @@ const userSchema = new mongoose.Schema({
         required : true,
         unique : true
     },
-    branch : {
-        type: Number,
-        required : true
-    },
+    
     role : {
         type: Number,
         required : true
     },
-    // branch : {
-    //     type : mongoose.Schema.Types.ObjectId, 
-    //     ref: 'Branch' 
-    // },
+    branch : {
+        type : mongoose.Schema.Types.ObjectId, 
+        ref: 'Branch' 
+    },
     // role : {
     //     type : mongoose.Schema.Types.ObjectId, 
     //     ref: 'Role' 

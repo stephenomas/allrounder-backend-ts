@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 export const RegistrationSchema = Joi.object({
     name :Joi.string().required(),
     email: Joi.string().email().required(),
-    password: Joi.string().min(3).required(),
+    password: Joi.string().min(5).required(),
     confirmPassword: Joi.string()
     .valid(Joi.ref('password')) // Compare with the 'password' field
     .required()
@@ -17,6 +17,17 @@ export const RegistrationSchema = Joi.object({
     role: Joi.number().required(),
   });
 
+
+export const PasswordUpdateSchema = Joi.object({
+  password: Joi.string().min(5).required(),
+  confirmPassword: Joi.string()
+  .valid(Joi.ref('password')) // Compare with the 'password' field
+    .required()
+    .label('Confirm Password')
+    .messages({
+      'any.only': '{{#label}} does not match the Password',
+    })
+})
 
 //   // Define a custom validation function for the branchId
 // const validateBranchId = async (value : number) => {

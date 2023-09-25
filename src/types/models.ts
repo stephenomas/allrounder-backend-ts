@@ -1,4 +1,5 @@
 import {ObjectId, Document} from 'mongoose'
+import { number } from 'joi';
 
 export interface User extends Document {
     _id: ObjectId,
@@ -8,7 +9,7 @@ export interface User extends Document {
     password : string,
     phone: string,
     branch : ObjectId,
-    role : ObjectId,
+    role : Number,
     status : Boolean,
     photo : String
  }
@@ -19,7 +20,8 @@ export interface User extends Document {
     name: string,
     address: string,
     state: string,
-    user: ObjectId
+    user: ObjectId,
+    status: Boolean
  }
 
  export interface Ckd extends Document {
@@ -74,7 +76,66 @@ export interface User extends Document {
  }
 
  export interface Sale extends Document {
-
+    _id: ObjectId,
+    name: string,
+    email : string,
+    number : string,
+    address : string,
+    paymentMethods : Array<{
+        method : string,
+        bank? : string,
+        account? : string,
+        amount : number
+    }>,
+    paymentStatus : string,
+    unit : number,
+    price : number,
+    discountPrice: number,
+    ckdSale: boolean,
+    spec : ObjectId, 
+    no_of_ckd : number,    
+    no_of_engine : number,
+    no_of_bolts : number,
+    branch: ObjectId
+    saleItems? : Array<{
+        product: ObjectId,
+        price : number, 
+        note : string,
+    }>
  }
 
- 
+export interface Spec extends Document {
+    _id : ObjectId,
+    name : string,
+    brand : ObjectId,
+    type : string,
+    price : number,
+    chasisdigit : number,
+    enginedigit : number,
+    engine : string,
+    branch: ObjectId
+} 
+
+
+export interface Warehouse extends Document {
+    _id : ObjectId,
+    user : ObjectId,
+    branch : ObjectId,
+    destination : ObjectId,
+    cbu? : Array<{
+        spec: ObjectId,
+        products : Array<ObjectId> 
+    }>,
+    ckd? : ObjectId,
+    no_of_engines? : number
+    no_of_bolts? : number,
+    remark? : string,
+    status  : string,
+    receiver : ObjectId
+}
+
+export interface User_Permission extends Document {
+   _id : ObjectId,
+   user : ObjectId,
+   per
+}
