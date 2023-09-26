@@ -2,6 +2,7 @@
 import mongoose from 'mongoose';
 import {User as IUser} from '../types';
 import timezone from 'moment-timezone';
+import { Permission } from '../types/models';
 
 const userSchema = new mongoose.Schema({
     name : {
@@ -40,6 +41,13 @@ const userSchema = new mongoose.Schema({
         default: true
     },
     photo : String,
+
+    permissions : [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Permission'
+        }
+    ],
 
     
 },

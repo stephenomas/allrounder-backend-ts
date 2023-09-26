@@ -11,7 +11,10 @@ export interface User extends Document {
     branch : ObjectId,
     role : Number,
     status : Boolean,
-    photo : String
+    photo : String,
+    permissions : [
+      _id: ObjectId
+    ]
  }
 
 
@@ -137,5 +140,11 @@ export interface Warehouse extends Document {
 export interface User_Permission extends Document {
    _id : ObjectId,
    user : ObjectId,
-   per
+   permission : ObjectId
+}
+
+
+export interface Blacklist extends Document {
+   _id : ObjectId,
+   token : string
 }

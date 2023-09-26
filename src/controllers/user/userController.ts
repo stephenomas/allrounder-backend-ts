@@ -6,6 +6,7 @@ import { ResponseBody } from '../../types';
 import bcrypt from 'bcrypt';
 import { MongoClient, MongoError } from 'mongodb';
 import { AuthRequest } from '../../types';
+import { Permission } from '../../types/models';
 
  const userController = {
     registerUser : async(req:Request, res:Response, next: NextFunction)  =>  {
@@ -13,7 +14,7 @@ import { AuthRequest } from '../../types';
         if (error) {
             return res.status(400).json({message : error.message} as ResponseBody);
         }
-        const {email, phone, branch, role, name} = req.body;
+        const {email, phone, branch, role, name, permissions} = req.body;
         try {
             const userExists = await User.findOne({email});  
             if(userExists) 
@@ -27,7 +28,8 @@ import { AuthRequest } from '../../types';
             password,
             phone,
             branch,
-            role  
+            role,
+            permissions  
             }).save();
             const data : ResponseBody = {
                 message : "User Registered Successfully",
@@ -78,6 +80,49 @@ import { AuthRequest } from '../../types';
         const user  =req.user!
         return res.status(200).json({message : 'Profile', status : 200, data : user} as ResponseBody)
 
+    },
+
+    adminEditUser : async(req: AuthRequest, res: Response) => {
+        const {id} = req.params
+        try {
+            const updatedUser = await User.findOneAndUpdate({_id:id}, req.body, {new:true}).orFail();
+            if(updatedUser){
+                return res.status(200).json({message : 'Profile Updated successfully',
+                status : 200,
+                data: updatedUser
+                } as ResponseBody)
+            }else{
+                return res.status(400).json({message: 'not updated'})
+            }
+        } catch (error) {
+            return res.status(400).json({message: (error as MongoError).message }as ResponseBody)
+        }
+        
+    },
+    adminGetUser : async (req:AuthRequest, res: Response) => {
+        const {id} = req.params
+        try {
+            const user = await User.findOne({_id : id})
+            return res.status(200).json({message : 'User',
+            status : 200,
+            data: user
+            } as ResponseBody)
+        } catch (error) {
+            return res.status(400).json({message: (error as MongoError).message }as ResponseBody)
+        }
+    },
+    getUsers : async (req : AuthRequest, res: Response) => {
+        try {
+            const pageSize = 10;
+            const page = Number(req.query.pageNumber) || 1;
+            const count = await User.countDocuments({});
+            const products = await User.find({})
+            .limit(pageSize)
+            .skip(pageSize * (page - 1));
+            res.status(200).json({ message:'Users',data :{products, page, pages: Math.ceil(count / pageSize)} });
+        }catch(error){
+            return res.status(400).json({message: (error as MongoError).message }as ResponseBody)
+        }
     }
 }
 

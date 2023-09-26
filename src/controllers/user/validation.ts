@@ -13,8 +13,9 @@ export const RegistrationSchema = Joi.object({
       'any.only': '{{#label}} does not match the Password',
     }),
     phone : Joi.string().min(11).required(),
-    branch: Joi.number().required(),
+    branch: Joi.string().required(),
     role: Joi.number().required(),
+    permissions : Joi.array()
   });
 
 

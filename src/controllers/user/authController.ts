@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt'
 import { ResponseBody } from "../../types";
 import jwt from 'jsonwebtoken';
 import { MongoError } from 'mongodb';
+import Blacklist from "../../models/Blacklist";
 
 
 const authController = {
@@ -24,10 +25,24 @@ const authController = {
             }
         }
       }catch(error){
-        return res.status(404).json({status:404, message: (error as MongoError).message} as ResponseBody);
+        return res.status(500).json({status:500, message: (error as MongoError).message} as ResponseBody);
       }
       
-    }   
+    },
+    
+    logout : async (req:Request, res:Response) => {
+      const authHeader  = req.headers.authorization;
+      const token = (authHeader as string).split(' ')[1];
+      try {
+        const Blacklisted = await new Blacklist({
+          token
+        }).save()
+        return res.status(200).json({status:200, message:'Logout Successful'})
+      } catch (error) {
+        return res.status(500).json({status:500, message: (error as MongoError).message} as ResponseBody);
+      }
+
+    }
 }
 
 
