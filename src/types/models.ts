@@ -3,7 +3,6 @@ import { number } from 'joi';
 
 export interface User extends Document {
     _id: ObjectId,
-    iddd: string,
     name : string,
     email : string,
     password : string,

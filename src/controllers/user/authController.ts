@@ -13,8 +13,9 @@ const authController = {
       try{
         const user = await User.findOne({email});
         if(!user){
-            return res.status(404).json({status:404, message: "Invalid Username or Passwor"} as ResponseBody);
-        }else{
+            return res.status(404).json({status:404, message: "Invalid Username or Password"} as ResponseBody);
+        
+          }else{
             if(bcrypt.compareSync(password, user.password)){
                 const token = jwt.sign({ id : user._id }, process.env.JWT_SECRET!, {
                     expiresIn: "30d",
