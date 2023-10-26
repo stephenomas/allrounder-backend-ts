@@ -13,7 +13,7 @@ export const paginate = async <T extends Document>(
   const skip = (pageNum - 1) * perPage;
 
   try {
-    const countQuery = $query.model.find().countDocuments();
+    const countQuery = $query.model.countDocuments($query.getFilter());
     const totalCount = await countQuery.exec();
     const items = await $query
       .skip(skip)
@@ -27,3 +27,5 @@ export const paginate = async <T extends Document>(
     throw new Error('Pagination error: ' + (error as MongoError).message);
   }
 };
+
+

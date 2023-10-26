@@ -7,7 +7,7 @@ import { notFound, errorHandler } from './middleware/errorMiddleware';
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000','https://allrounder-rkvzcnkh9-stephen-omagbemis-projects.vercel.app'],
   }));
 
   app.use(morgan('combined'));

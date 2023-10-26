@@ -19,15 +19,20 @@ export const RegistrationSchema = Joi.object({
   });
 
 
-export const PasswordUpdateSchema = Joi.object({
-  password: Joi.string().min(5).required(),
+export const userUpdateSchema = Joi.object({
+  name :Joi.string().required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().min(8),
   confirmPassword: Joi.string()
   .valid(Joi.ref('password')) // Compare with the 'password' field
-    .required()
     .label('Confirm Password')
     .messages({
       'any.only': '{{#label}} does not match the Password',
-    })
+    }),
+    phone : Joi.string().min(11),
+    branch: Joi.string(),
+    role: Joi.number().required(),
+    permissions : Joi.array()
 })
 
 //   // Define a custom validation function for the branchId

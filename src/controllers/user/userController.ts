@@ -1,4 +1,4 @@
-import {PasswordUpdateSchema, RegistrationSchema} from './validation'
+import {userUpdateSchema, RegistrationSchema} from './validation'
 import { Request, Response, NextFunction } from 'express';
 import boom from '@hapi/boom';
 import User from '../../models/User';
@@ -7,6 +7,8 @@ import bcrypt from 'bcrypt';
 import { MongoClient, MongoError } from 'mongodb';
 import { AuthRequest } from '../../types';
 import { Permission } from '../../types/models';
+import { paginate } from '../../utils/helpers';
+import { PER_PAGE } from '../../utils/constants';
 
  const userController = {
     registerUser : async(req:Request, res:Response, next: NextFunction)  =>  {
@@ -16,7 +18,13 @@ import { Permission } from '../../types/models';
         }
         const {email, phone, branch, role, name, permissions} = req.body;
         try {
-            const userExists = await User.findOne({email});  
+            const userExists = await User.findOne({
+                $or: [
+                  { email}, 
+                  { phone}
+                ],
+              })
+          
             if(userExists) 
                 return res.status(400).json({message : 'User already exists'} as ResponseBody);
             
@@ -46,17 +54,21 @@ import { Permission } from '../../types/models';
 
     editUser : async(req:AuthRequest, res:Response, next:Function) => {
 
-        if(req.body.password){
-            const {error} = PasswordUpdateSchema.validate(req.body)
-            if (error) {
-                return res.status(400).json({message : error.message} as ResponseBody);
-            }
+     
+        const {error} = userUpdateSchema.validate(req.body)
+        if (error) {
+            return res.status(400).json({message : error.message} as ResponseBody);
+        }
+        if(req.body.password || req.body.password.length > 0){ 
+            req.body.password = bcrypt.hashSync(req.body.password, 10)
+        }else{
+            delete req.body.password
         }
         const user = req.user!;
         const update = {
             name : req.body.name ? req.body.name : user.name,
             phone  : req.body.phone ? req.body.phone : user.phone,
-            password : req.body.password ? bcrypt.hashSync(req.body.password, 10) : user.password
+            password : req.body.password ?? user.password
         }
         try {
             const updatedUser = await User.findOneAndUpdate({_id:user.id}, update, {new:true}).orFail();
@@ -84,7 +96,16 @@ import { Permission } from '../../types/models';
 
     adminEditUser : async(req: AuthRequest, res: Response) => {
         const {id} = req.params
+     
         try {
+            const {error} = userUpdateSchema.validate(req.body)
+            if (error) {
+                return res.status(400).json({message : error.message} as ResponseBody);
+            }
+            if(req.body.password){ 
+                req.body.password = bcrypt.hashSync(req.body.password, 10)
+            }
+           // console.log(req.body);
             const updatedUser = await User.findOneAndUpdate({_id:id}, req.body, {new:true}).orFail();
             if(updatedUser){
                 return res.status(200).json({message : 'Profile Updated successfully',
@@ -102,7 +123,8 @@ import { Permission } from '../../types/models';
     adminGetUser : async (req:AuthRequest, res: Response) => {
         const {id} = req.params
         try {
-            const user = await User.findOne({_id : id})
+            const user = await User.findOne({_id : id}).populate('branch')
+            if(!user) return res.status(404).json({status: 404, message : 'User not found'})
             return res.status(200).json({message : 'User',
             status : 200,
             data: user
@@ -113,13 +135,26 @@ import { Permission } from '../../types/models';
     },
     getUsers : async (req : AuthRequest, res: Response) => {
         try {
-            const pageSize = 10;
-            const page = Number(req.query.pageNumber) || 1;
-            const count = await User.countDocuments({});
-            const products = await User.find({})
-            .limit(pageSize)
-            .skip(pageSize * (page - 1));
-            res.status(200).json({ message:'Users',data :{products, page, pages: Math.ceil(count / pageSize)} });
+            const perPage = PER_PAGE;
+            const users =  User.find({_id : {$ne :req.user?._id}}).populate('branch')
+            const data = await paginate('users', users, req, perPage);
+            res.status(200).json({ message:'Users',data});
+        }catch(error){
+            return res.status(400).json({message: (error as MongoError).message }as ResponseBody)
+        }
+    },
+    toggleUser : async (req : AuthRequest, res:Response) => {
+        const {id} = req.params
+        try {
+            const user = await User.findById(id);
+            if(user){
+                user.status = !user.status;
+                await user.save()
+                res.status(200).json({message:`User ${user.status ? 'Activated': 'Deactivated'} successfully`})
+            }else{
+                return res.status(404).json({message: 'user not found'})
+            }
+           
         }catch(error){
             return res.status(400).json({message: (error as MongoError).message }as ResponseBody)
         }
