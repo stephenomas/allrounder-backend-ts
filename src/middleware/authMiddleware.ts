@@ -4,6 +4,7 @@ import User from '../models/User';
 import { AuthRequest, ResponseBody, User as IUser } from '../types';
 import Blacklist from '../models/Blacklist';
 import Permission from '../models/Permission';
+import { MongoError } from 'mongodb';
 
 type Decoded = {
     id :string,
@@ -45,6 +46,7 @@ type Auth = {
 export const authMiddleware = async (req :AuthRequest, res :Response, next: NextFunction) => {
     await authenticated(req, res).then((response) => {
         if(response.user){
+            req.user = response.user
             next()
         }else{
             return res.status(401).json({message : response.message})
@@ -61,12 +63,14 @@ export const PermissionMiddleware = (name : string) => {
                 if(user.role == 1){
                     next()
                 }else{
-                    const permission = Permission.findOne({name}).then(response => {
+                    Permission.findOne({name}).then(response => {
                         if(user.permissions?.includes(response!.id)) {
                             next()
                         }else{ 
                             return res.status(403).json({message : "You are not authorized"} as ResponseBody);
                         }
+                    }).catch(error => {
+                        return res.status(400).json({message: (error as MongoError).message }as ResponseBody)
                     })
                 }
             }else{

@@ -46,7 +46,8 @@ export interface User extends Document {
  export interface Brand extends Document {
     _id: ObjectId,
     name: string,
-    user: ObjectId
+    user: ObjectId,
+    status : boolean
  }
 
  export interface Inventory extends Document {
@@ -110,12 +111,14 @@ export interface Spec extends Document {
     _id : ObjectId,
     name : string,
     brand : ObjectId,
+    user : ObjectId,
     type : string,
     price : number,
     chasisdigit : number,
     enginedigit : number,
     engine : string,
-    branch: ObjectId
+    branch: ObjectId,
+    status : boolean
 } 
 
 

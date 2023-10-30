@@ -11,7 +11,7 @@ userRoutes.post('/logout',authMiddleware, authController.logout);
 userRoutes.route('/:id').put(adminMiddleware, userController.adminEditUser).get(adminMiddleware,userController.adminGetUser)
 userRoutes.post('/:id/toggle', adminMiddleware, userController.toggleUser)
 userRoutes.get('/',adminMiddleware,userController.getUsers)
-userRoutes.route('/profile').put(authMiddleware,userController.editUser).get(authMiddleware,userController.getProfile)
+userRoutes.route('/account/profile').put(authMiddleware,userController.editUser).get(authMiddleware,userController.getProfile)
 
 
 export default userRoutes;

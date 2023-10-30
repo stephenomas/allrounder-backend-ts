@@ -29,10 +29,21 @@ const branchController = {
       
     },
 
-   index : async (req : Request, res : Response, next : NextFunction) => {
+   adminIndex : async (req : Request, res : Response, next : NextFunction) => {
         try {
         const perPage = PER_PAGE;
         const  branches =  Branch.find({}).sort({ _id: -1 });
+        const data = await paginate('branches', branches, req, perPage);
+        return res.status(200).json({message: 'Branches', status : 200, data } as ResponseBody)
+        } catch (error) {
+            return res.status(500).json({message : (error as MongoError).message} as ResponseBody)
+        }
+    },
+
+    index : async (req : Request, res : Response, next : NextFunction) => {
+        try {
+        const perPage = PER_PAGE;
+        const  branches =  Branch.find({status : true}).sort({ _id: -1 });
         const data = await paginate('branches', branches, req, perPage);
         return res.status(200).json({message: 'Branches', status : 200, data } as ResponseBody)
         } catch (error) {

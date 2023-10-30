@@ -16,6 +16,7 @@ const authController = {
             return res.status(404).json({status:404, message: "Invalid Username or Password"} as ResponseBody);
         
           }else{
+            if(!user.status) return res.status(403).json({status:403, message: "Account is inactive contact Admin"} as ResponseBody);
             if(bcrypt.compareSync(password, user.password)){
                 const token = jwt.sign({ id : user._id }, process.env.JWT_SECRET!, {
                     expiresIn: "30d",
