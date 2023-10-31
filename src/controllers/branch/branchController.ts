@@ -29,7 +29,7 @@ const branchController = {
       
     },
 
-   adminIndex : async (req : Request, res : Response, next : NextFunction) => {
+   adminIndex : async (req : AuthRequest, res : Response, next : NextFunction) => {
         try {
         const perPage = PER_PAGE;
         const  branches =  Branch.find({}).sort({ _id: -1 });

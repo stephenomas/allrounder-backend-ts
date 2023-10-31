@@ -4,6 +4,6 @@ import { authMiddleware, PermissionMiddleware } from "../middleware/authMiddlewa
 
 const productRoutes  = Router();
 
-productRoutes.post('/create', PermissionMiddleware("Add Product"), productController.create)
-
+productRoutes.route('/').post(PermissionMiddleware("Add Product"), productController.create).get(PermissionMiddleware("View Product"), productController.adminIndex)
+productRoutes.get('/list', productController.index)
 export default productRoutes;
