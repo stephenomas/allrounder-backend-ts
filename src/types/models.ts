@@ -75,7 +75,7 @@ export interface User extends Document {
     color : string,
     trampoline : string,
     remark: string,
-    status : string
+    status : boolean
  }
 
  export interface Sale extends Document {
