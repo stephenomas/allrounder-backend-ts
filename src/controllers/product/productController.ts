@@ -16,7 +16,7 @@ const productController = {
         try {
             const exists = await Product.findOne({chasisnumber: req.body.chasisnumber})
             if(exists) return res.status(400).json({message: 'Product already exists', status : 400} as ResponseBody)
-            const product = await new Product({spec: req.body.model, user:req.user!.id, ...req.body}).save()
+            const product = await new Product({spec: req.body.spec, user:req.user!.id, ...req.body}).save()
             return res.status(200).json({message: 'Product created', status:200, data : product} as ResponseBody)
 
         } catch (error) {

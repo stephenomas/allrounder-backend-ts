@@ -29,10 +29,11 @@ export interface User extends Document {
  export interface Ckd extends Document {
     _id: ObjectId,
     type: string,
-    amount: number,
+    quantity: number,
     remark : string,
     spec : ObjectId,
-    user : ObjectId
+    user : ObjectId, 
+    status : boolean
     
  }
 
