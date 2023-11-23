@@ -11,6 +11,6 @@ COPY .env ./
 
 USER node
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "server"]
 
 EXPOSE 9000

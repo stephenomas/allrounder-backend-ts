@@ -43,9 +43,9 @@ const brandController = {
     index : async  ( req: AuthRequest, res: Response, next: NextFunction) => {
         try {
             const perPage = PER_PAGE;
-            const brands =  Brand.find({status : {$ne : false}}).sort({ _id: -1 });
-            const data =  await paginate('brands', brands, req, perPage)
-            return res.status(200).json({message: 'Brands', status : 200, data } as ResponseBody)
+            const brands = await Brand.find({status : {$ne : false}}).sort({ _id: -1 });
+            // const data =  await paginate('brands', brands, req, perPage)
+            return res.status(200).json({message: 'Brands', status : 200, data :brands } as ResponseBody)
         }catch(error){
             return res.status(500).json({message : (error as MongoError).message} as ResponseBody)
         }

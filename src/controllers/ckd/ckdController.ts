@@ -5,6 +5,7 @@ import Ckd from "../../models/Ckd";
 import { MongoError } from "mongodb";
 import { PER_PAGE } from "../../utils/constants";
 import { paginate } from "../../utils/helpers";
+import mongoose from "mongoose";
 
 
 const ckdController = {
@@ -52,6 +53,40 @@ const ckdController = {
             return res.status(500).json({message : (error as MongoError).message} as ResponseBody)
         }
     },
+    show : async ( req: AuthRequest, res: Response, next: NextFunction) => {
+        const {id} = req.params
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(404).json({ status: 404, message: 'Ckd not found' });
+        }
+          try {
+            const ckd = await Ckd.findById(id)
+            if(!ckd) return res.status(404).json({status: 404, message : 'Ckd not found'})
+            return res.status(200).json({message: 'Ckd', status : 200, data : ckd } as ResponseBody)
+        }catch(error){
+            return res.status(500).json({message : (error as MongoError).message} as ResponseBody)
+        }
+    }, edit : async (req : AuthRequest, res : Response, next : NextFunction) => {
+        try{
+            const {error} = CkdSchema.validate(req.body)
+            if(error) return res.status(400).json({message: error.message} as ResponseBody)
+            const { id : _id } = req.params;
+            const ckd = await Ckd.findOneAndUpdate({_id}, req.body, {new:true}).orFail()
+            return res.status(200).json({message:'Spec Updated Successfully', status : 200, data : ckd} as ResponseBody)
+        }catch(error) {
+            return res.status(500).json({message:(error as MongoError).message})
+        }
+    },
+    toggle : async (req:AuthRequest, res : Response) => {
+        try{
+            const { id : _id } = req.params;
+            const ckd  = await Ckd.findById(_id).orFail();
+            ckd.status = !ckd.status
+            await ckd.save()
+            res.status(200).json({message:`Ckd ${ckd.status ? 'Activated': 'Deactivated'} successfully`})
+           }catch(error) {
+            return res.status(500).json({message:(error as MongoError).message})
+        }
+    }
 }
 
 

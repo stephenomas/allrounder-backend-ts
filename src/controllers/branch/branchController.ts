@@ -43,9 +43,9 @@ const branchController = {
     index : async (req : Request, res : Response, next : NextFunction) => {
         try {
         const perPage = PER_PAGE;
-        const  branches =  Branch.find({status : true}).sort({ _id: -1 });
-        const data = await paginate('branches', branches, req, perPage);
-        return res.status(200).json({message: 'Branches', status : 200, data } as ResponseBody)
+        const  branches = await Branch.find({status : true}).sort({ _id: -1 });
+  
+        return res.status(200).json({message: 'Branches', status : 200, data : branches } as ResponseBody)
         } catch (error) {
             return res.status(500).json({message : (error as MongoError).message} as ResponseBody)
         }

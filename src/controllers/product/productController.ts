@@ -37,9 +37,9 @@ const productController = {
     index : async (req : Request, res : Response, next : NextFunction) => {
         try {
             const perPage = PER_PAGE;
-            const  products =  Product.find({status : true}).sort({ _id: -1 });
-            const data = await paginate('products', products, req, perPage);
-            return res.status(200).json({message: 'Products', status : 200, data } as ResponseBody)
+            const  products = await  Product.find({status : true}).sort({ _id: -1 });
+           
+            return res.status(200).json({message: 'Products', status : 200, data: products } as ResponseBody)
         } catch (error) {
             return res.status(500).json({message : (error as MongoError).message} as ResponseBody)
         }

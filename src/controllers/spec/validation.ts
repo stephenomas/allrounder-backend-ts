@@ -9,6 +9,7 @@ export const SpecSchema = Joi.object({
     chasisdigit: Joi.number().required(),
     enginedigit: Joi.number().required(),
     engine : Joi.string().required(),
+    branch : Joi.string().optional()
 });
 
 
