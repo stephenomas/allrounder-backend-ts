@@ -66,7 +66,6 @@ export const paginate_aggregate = async <T extends Document>(
       throw new Error('Pagination error: ' + (error as MongoError).message);
     }
 
-
 }
 
 
