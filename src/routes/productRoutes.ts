@@ -4,7 +4,7 @@ import { authMiddleware, PermissionMiddleware } from "../middleware/authMiddlewa
 
 const productRoutes  = Router();
 
-productRoutes.route('/').post(PermissionMiddleware("Add Product"), productController.create).get(PermissionMiddleware("View Product"), productController.adminIndex)
+productRoutes.route('/').post(PermissionMiddleware("Add Product"), productController.create).get(PermissionMiddleware("View Product"), productController.index)
 productRoutes.get('/list', authMiddleware, productController.index)
 productRoutes.get('/:id', PermissionMiddleware('View Product'), productController.show)
 productRoutes.put('/:id', PermissionMiddleware('Edit Product'), productController.edit)

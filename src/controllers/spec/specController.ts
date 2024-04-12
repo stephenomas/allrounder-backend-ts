@@ -39,6 +39,7 @@ const specController = {
     adminIndex : async ( req: AuthRequest, res: Response, next: NextFunction) => {
         try {
             const perPage = PER_PAGE;
+            
             const specs =  Spec.find({}).populate([{path :'brand', select : 'name id'}, {path :'branch', select : 'name id'}]).sort({ _id: -1 })
             const data =  await paginate('specs', specs, req, perPage)
             return res.status(200).json({message: 'Model', status : 200, data } as ResponseBody)
@@ -49,7 +50,7 @@ const specController = {
     index : async  ( req: AuthRequest, res: Response, next: NextFunction) => {
         try {
             const perPage = PER_PAGE;
-            const specs =  await Spec.find({status : {$ne : false}}).sort({ _id: -1 });
+            const specs =  await Spec.find({status : {$ne : false}}).populate([{path :'brand', select : 'name id'}, {path :'branch', select : 'name id'}]).sort({ _id: -1 });
        
             return res.status(200).json({message: 'Model', status : 200, data:specs } as ResponseBody)
         }catch(error){
