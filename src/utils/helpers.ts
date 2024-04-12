@@ -58,7 +58,6 @@ export const paginate_aggregate = async <T extends Document>(
             { $limit: perPage }
           )
       }
-     
       data = await query.aggregate(pipeline).exec()
   
       return { [keyName]: data, page : pageNum, totalCount, perPage : pageParam ? perPage : totalCount};
