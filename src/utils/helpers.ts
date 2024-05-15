@@ -35,7 +35,6 @@ export const paginate = async <T extends Document>(
   }
 };
 
-
 export const paginate_aggregate = async <T extends Document>(
   keyName : string,
   query: Model<T>,
