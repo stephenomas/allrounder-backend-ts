@@ -10,4 +10,5 @@ export const ProductSchema = Joi.object({
     trampoline : Joi.string().optional(),
     remark : Joi.string().optional(),
 
+    
 });
