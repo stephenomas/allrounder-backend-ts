@@ -1,7 +1,6 @@
 
 import Joi from "joi";
 
-
 export const ProductSchema = Joi.object({
     spec :Joi.string().required(),
     chasisnumber: Joi.string().required(),
