@@ -8,7 +8,5 @@ export const ProductSchema = Joi.object({
     color : Joi.string().optional(),
     trampoline : Joi.string().optional(),
     remark : Joi.string().optional(),
-
-    
 });
 
